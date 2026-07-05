@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#00566b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="ControlGlucose" />
+    <title>ControlGlucose APP</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="phone-stage">
+      <main class="app" id="app">
+        <section class="screen login-screen is-active" id="loginScreen" aria-labelledby="loginTitle">
+          <form class="login-card" id="loginForm">
+            <div class="login-logo">
+              <img src="./assets/logo-glucose-control.png" alt="ControlGlucose" />
+            </div>
+            <h1 id="loginTitle">ControlGlucose APP</h1>
+            <p data-i18n="loginIntro">Accede con los datos enviados después de tu compra.</p>
+            <label>
+              <span data-i18n="emailLabel">Email</span>
+              <input id="emailInput" type="email" placeholder="tu@email.com" autocomplete="email" required />
+            </label>
+            <label>
+              <span data-i18n="passwordLabel">Contraseña</span>
+              <input id="passwordInput" type="password" placeholder="Tu contraseña" autocomplete="current-password" required />
+            </label>
+            <button class="primary-btn" type="submit" data-i18n="loginButton">Entrar</button>
+            <div class="login-status" id="loginStatus" aria-live="polite"></div>
+            <small data-i18n="medicalNotice">Herramienta educativa de organización. No sustituye consejo, diagnóstico, tratamiento ni medicación.</small>
+          </form>
+        </section>
+
+        <section class="screen member-screen" id="memberScreen" aria-labelledby="homeTitle">
+          <header class="mobile-header">
+            <div>
+              <span id="greetingText">Buenos días</span>
+              <h1 id="homeTitle" data-i18n="homeTitle">Tu rutina de hoy</h1>
+            </div>
+            <button class="avatar-btn" id="logoutBtn" aria-label="Salir">TU</button>
+          </header>
+
+          <section class="hero-card">
+            <div>
+              <span class="eyebrow">Progreso de hoy</span>
+              <strong><span id="completedCount">0</span> <span data-i18n="ofText">de</span> <span id="totalCount">7</span> <span data-i18n="habitsCompleted">hábitos completados</span></strong>
+              <p id="dailyMessage">Cada pequeño registro cuenta. Busca constancia, no perfección.</p>
+            </div>
+            <div class="score-ring" aria-label="Progreso del dia">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="48" />
+                <circle id="scoreCircle" cx="60" cy="60" r="48" />
+              </svg>
+              <span id="scoreText">0%</span>
+            </div>
+          </section>
+
+          <div class="tab-panel is-active" id="todayPanel">
+            <section class="checkin-card">
+              <div class="section-heading">
+                <h2 data-i18n="quickCheckin">Check-in rápido</h2>
+                <span>2 min</span>
+              </div>
+              <div class="metric-grid">
+                <label>
+                  <span data-i18n="glucoseLabel">Glucosa</span>
+                  <div class="metric-input">
+                    <input id="glucoseInput" type="number" inputmode="numeric" min="40" max="500" placeholder="Ej. 128" />
+                    <span>mg/dL</span>
+                  </div>
+                </label>
+                <label>
+                  <span data-i18n="energyLabel">Energia</span>
+                  <select id="energyInput">
+                    <option>Estable</option>
+                    <option>Baja</option>
+                    <option>Alta</option>
+                    <option>Irregular</option>
+                  </select>
+                </label>
+              </div>
+              <button class="secondary-btn" id="saveCheckinBtn" data-i18n="saveRecord">Guardar registro</button>
+            </section>
+
+            <section class="last-entry-card" id="lastEntryCard"></section>
+
+            <section class="focus-card">
+              <div>
+                <span class="eyebrow">SOS antojo</span>
+                <h2 data-i18n="cravingTitle">Antes de comer por impulso</h2>
+                <p data-i18n="cravingCopy">Haz una pausa de 2 minutos, toma agua y registra qué sientes. El objetivo es reconocer patrones, no castigarte.</p>
+              </div>
+              <button class="tiny-action" id="cravingBtn" data-i18n="startPause">Iniciar pausa</button>
+            </section>
+
+            <section class="habit-list" aria-label="Habitos de hoy">
+              <div class="section-heading">
+                <h2 data-i18n="recommendedHabits">Hábitos recomendados</h2>
+                <span id="habitDate"></span>
+              </div>
+              <div id="habitList"></div>
+            </section>
+          </div>
+
+          <div class="tab-panel" id="trackerPanel">
+            <section class="trend-card">
+              <div class="section-heading">
+                <h2 data-i18n="weeklyControl">Control semanal</h2>
+                <span id="trackerCount">Sin datos</span>
+              </div>
+              <div class="bars" id="bars"></div>
+              <p id="trackerMessage">Cuando guardes tus registros diarios, aquí verás tu evolución real. No usamos datos de ejemplo.</p>
+            </section>
+            <section class="history-card">
+              <div class="section-heading">
+                <h2 data-i18n="recentHistory">Historial reciente</h2>
+                <span data-i18n="yourProfile">Tu perfil</span>
+              </div>
+              <div id="historyList"></div>
+            </section>
+            <section class="note-card">
+              <h2 data-i18n="earlySigns">Señales tempranas</h2>
+              <ul>
+                <li>Menos bajones de energía después de comer.</li>
+                <li>Menos antojos entre comidas.</li>
+                <li>Mejor descanso y más claridad durante el día.</li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="tab-panel" id="learnPanel">
+            <section class="lesson-list">
+              <div class="section-heading">
+                <h2 data-i18n="routineSupport">Apoyo de rutina</h2>
+                <span data-i18n="microguides">Microguías</span>
+              </div>
+              <article class="lesson-card">
+                <div class="lesson-icon green"></div>
+                <div>
+                  <h3>Plato estable</h3>
+                  <p>Arma una comida con fibra, proteína y carbohidratos medidos para evitar picos bruscos.</p>
+                </div>
+              </article>
+              <article class="lesson-card">
+                <div class="lesson-icon blue"></div>
+                <div>
+                  <h3>Caminata después de comer</h3>
+                  <p>Una caminata suave puede ayudarte a sostener el hábito de movimiento diario.</p>
+                </div>
+              </article>
+              <article class="lesson-card">
+                <div class="lesson-icon coral"></div>
+                <div>
+                  <h3>No abandones demasiado pronto</h3>
+                  <p>Los cambios internos pueden aparecer antes que los resultados de laboratorio. Registra tus señales.</p>
+                </div>
+              </article>
+            </section>
+          </div>
+
+          <div class="tab-panel" id="profilePanel">
+            <section class="profile-card">
+              <div class="profile-top">
+                <div class="avatar-large">TU</div>
+                <div>
+                  <h2 data-i18n="profileAccessTitle">Tu acceso está activo</h2>
+                  <p data-i18n="profileAccessCopy">Área de miembros enfocada en seguimiento personal, no en lectura de PDFs.</p>
+                </div>
+              </div>
+              <div class="settings-block">
+                <label>
+                  <span data-i18n="languageLabel">Idioma del app</span>
+                  <select id="languageSelect">
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="en">English</option>
+                  </select>
+                </label>
+              </div>
+              <form class="password-panel" id="profilePasswordForm">
+                <h3 data-i18n="changePasswordTitle">Cambiar contraseña</h3>
+                <label>
+                  <span data-i18n="newPasswordLabel">Nueva contraseña</span>
+                  <input id="profileNewPassword" type="password" autocomplete="new-password" minlength="8" />
+                </label>
+                <label>
+                  <span data-i18n="confirmPasswordLabel">Confirmar contraseña</span>
+                  <input id="profileConfirmPassword" type="password" autocomplete="new-password" minlength="8" />
+                </label>
+                <button class="secondary-btn" type="submit" data-i18n="updatePasswordButton">Actualizar contraseña</button>
+                <div class="form-status" id="profilePasswordStatus" aria-live="polite"></div>
+              </form>
+              <div class="access-list">
+                <div><span></span> Controlador de hábitos diario</div>
+                <div><span></span> Check-in de glucosa y energía</div>
+                <div><span></span> Registro de comidas y actividad física</div>
+                <div><span></span> Progreso semanal</div>
+              </div>
+              <div class="hotmart-status">
+                <strong id="accessStatusTitle">Acceso conectado</strong>
+                <p id="accessStatusCopy">Tu perfil se sincroniza con Supabase. La liberación por Hotmart se activa por webhook.</p>
+              </div>
+            </section>
+          </div>
+
+          <footer class="app-footer" data-i18n="footerNotice">
+            App educativo de apoyo. Consulta a tu profesional de salud antes de cambiar medicación, dieta o rutina clínica.
+          </footer>
+
+          <nav class="bottom-tabs" aria-label="Secciones del app">
+            <button class="tab is-active" data-tab="today" data-testid="tab-today">
+              <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V20H5v-8.5Z"/><path d="M10 20v-5h4v5"/></svg>
+              <span data-i18n="tabToday">Hoy</span>
+            </button>
+            <button class="tab" data-tab="tracker" data-testid="tab-tracker">
+              <svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/></svg>
+              <span data-i18n="tabControl">Control</span>
+            </button>
+            <button class="tab" data-tab="learn" data-testid="tab-learn">
+              <svg viewBox="0 0 24 24"><path d="M5 5h10a4 4 0 0 1 4 4v10H9a4 4 0 0 1-4-4Z"/><path d="M9 9h6M9 13h5"/></svg>
+              <span data-i18n="tabGuides">Guías</span>
+            </button>
+            <button class="tab" data-tab="profile" data-testid="tab-profile">
+              <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+              <span data-i18n="tabProfile">Perfil</span>
+            </button>
+          </nav>
+
+          <div class="modal-overlay" id="passwordModal" aria-hidden="true">
+            <form class="modal-card" id="firstPasswordForm">
+              <div class="modal-logo">
+                <img src="./assets/logo-glucose-control.png" alt="ControlGlucose" />
+              </div>
+              <h2 data-i18n="firstPasswordTitle">Crea tu contraseña personal</h2>
+              <p data-i18n="firstPasswordCopy">Por seguridad, cambia la contraseña temporal antes de usar tu panel.</p>
+              <label>
+                <span data-i18n="newPasswordLabel">Nueva contraseña</span>
+                <input id="firstNewPassword" type="password" autocomplete="new-password" minlength="8" required />
+              </label>
+              <label>
+                <span data-i18n="confirmPasswordLabel">Confirmar contraseña</span>
+                <input id="firstConfirmPassword" type="password" autocomplete="new-password" minlength="8" required />
+              </label>
+              <button class="primary-btn" type="submit" data-i18n="saveNewPasswordButton">Guardar y entrar</button>
+              <div class="form-status" id="firstPasswordStatus" aria-live="polite"></div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
